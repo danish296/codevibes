@@ -1,206 +1,347 @@
 # CodeVibes 🌊
 
-> **AI Code Review for Developers Who Can't Afford CodeRabbit**
+> **AI Code Review for Developers Who Can't Afford CodeRabbit.**
 
-An open-source alternative to CodeRabbit powered by DeepSeek AI, offering intelligent code analysis with priority-based scanning to save tokens and costs.
+![License](https://img.shields.io/badge/license-MIT-blue.svg) ![Status](https://img.shields.io/badge/status-beta-orange.svg) ![Stack](https://img.shields.io/badge/stack-React+Express-green.svg) ![AI](https://img.shields.io/badge/AI-DeepSeek-purple.svg)
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![DeepSeek](https://img.shields.io/badge/AI-DeepSeek%20v3.2-orange)](https://deepseek.com)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.6-blue)](https://www.typescriptlang.org/)
-[![React](https://img.shields.io/badge/React-18-61DAFB)](https://reactjs.org/)
+CodeVibes is an intelligent code analysis tool that scans your GitHub repositories using AI to identify **Security Vulnerabilities**, **Bugs & Performance Issues**, and **Code Quality** improvements—giving you a quantifiable **Vibe Score** and actionable insights.
 
 ---
 
-## ✨ Features
+## 📸 See it in Action
 
-### 🔒 **Priority-Based Scanning**
-- **Priority 1**: Security & secrets (`.env`, auth, API keys)
-- **Priority 2**: Core business logic (endpoints, controllers, services)
-- **Priority 3**: Supporting code (utilities, tests, docs)
+### Dashboard & Pre-Analysis
+| Dashboard | Pre-Analysis View |
+|-----------|-------------------|
+| ![Dashboard](/screenshots/Dashboard.png) | ![Pre-Analysis](/screenshots/Pre-Analysis.png) |
 
-Analyze only what matters most - skip priorities you don't need to save tokens.
+### Analysis in Progress
+| Execution | Repo Selection |
+|-----------|----------------|
+| ![Execution](/screenshots/execution.png) | ![Repo](/screenshots/repo.png) |
 
-### 🤖 **Powered by DeepSeek AI**
-- Advanced AI analysis with DeepSeek v3.2
-- Finds security vulnerabilities, bugs, and performance issues
-- Detailed explanations and fix suggestions
-- Code examples for each issue
+### Post-Analysis Results
+| Post-Analysis | Detailed Stats |
+|---------------|----------------|
+| ![Post-Analysis](/screenshots/Post-analysis.png) | ![Stats](/screenshots/Detailed%20analysis%20cost%20and%20stats.png) |
 
-### 📊 **Beautiful Dashboard**
-- Real-time analysis progress
-- Vibe score gauge (code health metric)
-- Priority-based issue breakdown
-- Token usage and cost tracking
-- Analysis history (with GitHub Auth)
-
-### ⚡ **Performance Optimized**
-- Parallel file fetching (5 concurrent requests)
-- Smart caching (GitHub Tree API)
-- Lazy categorization (defer P2/P3 until needed)
-- **3-5x faster** than sequential processing
-
-### 🔐 **GitHub Integration**
-- OAuth login for private repos
-- Access your repositories directly
-- Automatic token management
-- Secure credential storage with encryption
+### Report & Insights
+| Report Insights |
+|-----------------|
+| ![Report Insights](/screenshots/Report-insight.png) |
 
 ---
 
-## 🚀 Quick Start
+## 🏗️ System Architecture
 
-### Prerequisites
-- Node.js 18+ and npm
-- DeepSeek API key ([Get one here](https://platform.deepseek.com))
-- GitHub OAuth App (for private repos)
+```mermaid
+graph TB
+    subgraph "Frontend (React + Vite)"
+        UI[🖥️ AnalyzePage]
+        Store[📦 Zustand Store]
+        API_Client[🔗 API Client]
+    end
 
-### Installation
+    subgraph "Backend (Express + Node.js)"
+        Server[⚙️ Express Server]
+        Auth[🔐 Auth Controller]
+        Analysis[🔍 Analysis Controller]
+        History[📜 History Controller]
+        
+        subgraph "Services"
+            GH_Service[📂 GitHub Service]
+            AI_Service[🧠 DeepSeek Service]
+        end
+        
+        DB[(💾 SQLite DB)]
+    end
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/danish296/codevibes.git
-   cd codevibes
-   ```
+    subgraph "External APIs"
+        GitHub[🐙 GitHub API]
+        DeepSeek[🤖 DeepSeek AI]
+    end
 
-2. **Install dependencies**
-   ```bash
-   # Frontend
-   npm install
-
-   # Backend
-   cd codevibes-backend
-   npm install
-   ```
-
-3. **Configure environment variables**
-   ```bash
-   cd codevibes-backend
-   cp .env.example .env
-   # Edit .env with your credentials
-   ```
-
-   Required variables:
-   ```env
-   GITHUB_CLIENT_ID=your_github_client_id
-   GITHUB_CLIENT_SECRET=your_github_client_secret
-   ENCRYPTION_KEY=your-32-character-encryption-key
-   JWT_SECRET=your-jwt-secret
-   ```
-
-4. **Start the application**
-   ```bash
-   # Terminal 1 - Backend
-   cd codevibes-backend
-   npm run dev
-
-   # Terminal 2 - Frontend
-   npm run dev
-   ```
-
-5. **Open your browser**
-   ```
-   http://localhost:5173
-   ```
-
----
-
-## 📖 Usage
-
-1. **Login with GitHub** (for private repos)
-2. **Enter repository URL** or select from your repos
-3. **Start Analysis** - begins with Priority 1 (security)
-4. **Review Issues** - detailed findings with fix suggestions
-5. **Continue to P2/P3** - or stop if satisfied
-6. **View History** - access past analyses anytime
-
----
-
-## 🏗️ Architecture
-
-```
-codevibes/
-├── src/                    # React frontend
-│   ├── components/         # UI components
-│   ├── pages/             # Page components
-│   ├── store/             # Zustand state management
-│   └── lib/               # API client
-│
-├── codevibes-backend/     # Express backend
-│   ├── src/
-│   │   ├── controllers/   # Route handlers
-│   │   ├── services/      # Business logic (DeepSeek, GitHub)
-│   │   ├── utils/         # Database, auth, encryption
-│   │   └── server.ts      # Express app
-│   └── data/              # SQLite database
-│
-└── public/                # Static assets
+    UI --> Store
+    Store --> API_Client
+    API_Client -->|REST API| Server
+    
+    Server --> Auth
+    Server --> Analysis
+    Server --> History
+    
+    Analysis --> GH_Service
+    Analysis --> AI_Service
+    History --> DB
+    Auth --> DB
+    
+    GH_Service -->|Fetch Files| GitHub
+    AI_Service -->|Stream Analysis| DeepSeek
 ```
 
 ---
 
-## 🔧 Configuration
+## 🔄 Analysis Workflow
 
-### Frontend (.env)
-```env
-VITE_API_URL=http://localhost:3001
+Here's how CodeVibes processes your repository:
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant Frontend
+    participant Backend
+    participant GitHub
+    participant AI
+
+    User->>Frontend: 1. Paste Repo URL
+    Frontend->>Backend: 2. POST /api/analyze
+    
+    Backend->>GitHub: 3. Fetch file tree
+    GitHub-->>Backend: File list
+    
+    Backend->>Backend: 4. Categorize files by priority
+    
+    loop For each Priority Level (P1→P2→P3)
+        Backend->>GitHub: 5a. Fetch file contents
+        GitHub-->>Backend: File content
+        Backend->>AI: 5b. Stream analysis request
+        AI-->>Backend: 5c. JSON issues (streamed)
+        Backend-->>Frontend: 5d. SSE: Live updates
+        Frontend-->>User: 5e. Display issues in real-time
+    end
+    
+    Backend->>Backend: 6. Calculate Vibe Score
+    Backend-->>Frontend: 7. Final report
+    Frontend-->>User: 8. Show complete analysis
 ```
-
-### Backend (.env)
-See `.env.example` for full configuration options.
-
-Key settings:
-- `MAX_FILES_PER_PRIORITY=20` - Files to analyze per priority
-- `DEEPSEEK_MODEL=deepseek-chat` - AI model to use
-- `PORT=3001` - Backend server port
 
 ---
 
-## 📊 Performance
+## 🎯 Priority-Based Scanning
 
-### Benchmarks (Medium Project - 50 files)
+CodeVibes uses a **three-tier priority system** to analyze files in order of importance:
 
-| Metric | Before Optimization | After Optimization | Improvement |
-|--------|---------------------|-------------------|-------------|
-| Initial scan | 8s | 2s | **75% faster** |
-| P1 file fetch (10 files) | 12s | 3s | **75% faster** |
-| P2 file fetch (20 files) | 25s | 6s | **76% faster** |
-| **Total analysis** | **45s** | **11s** | **⚡ 76% faster** |
+```mermaid
+graph LR
+    subgraph "P1: Security (🛡️ First)"
+        A1[".env files"]
+        A2["auth.*, jwt.*"]
+        A3["*password*, *secret*"]
+        A4["config files"]
+    end
+    
+    subgraph "P2: Core Logic (🧠 Second)"
+        B1["controllers/"]
+        B2["services/"]
+        B3["models/"]
+        B4["main.*, app.*"]
+    end
+    
+    subgraph "P3: Quality (💎 Third)"
+        C1["tests/"]
+        C2["utils/"]
+        C3["helpers/"]
+        C4["Other files"]
+    end
+    
+    A1 --> B1
+    A2 --> B2
+    A3 --> B3
+    A4 --> B4
+    
+    B1 --> C1
+    B2 --> C2
+    B3 --> C3
+    B4 --> C4
+```
 
-### API Usage Reduction
+| Priority | Focus | Severity Levels | Example Detections |
+|----------|-------|-----------------|-------------------|
++| **P1** | Security | CRITICAL, HIGH, MEDIUM, LOW | Hardcoded secrets, SQL injection, XSS, Auth bypass |
++| **P2** | Bugs & Performance | HIGH, MEDIUM, LOW | N+1 queries, Race conditions, Memory leaks |
++| **P3** | Code Quality | MEDIUM, LOW | DRY violations, Complexity, Maintainability |
 
-- **Before**: ~250 GitHub API calls for 100 files
-- **After**: ~30 GitHub API calls for 100 files
-- **Reduction**: **88%** fewer API calls
+---
+
+## ✨ Key Features
+
+### 🛡️ Security Analysis (P1)
+- **Secret Detection**: AWS keys, GitHub tokens, Stripe keys, JWTs
+- **Injection Attacks**: SQL, NoSQL, Command, Code injection
+- **Auth Issues**: Missing JWT verification, IDOR, Session misconfig
+- **XSS/CSRF**: Dangerous innerHTML, Missing CSRF tokens
+
+### 🧠 Bug & Performance Detection (P2)
+- **Logic Errors**: Null access, Off-by-one, Type coercion bugs
+- **Performance**: N+1 queries, O(n²) algorithms, Memory leaks
+- **Async Issues**: Unhandled promises, Race conditions
+- **Data Integrity**: Missing transactions, Concurrent updates
+
+### 💎 Code Quality Review (P3)
+- **Readability**: Naming, Complexity analysis
+- **DRY Violations**: Duplicated code patterns
+- **Modern Practices**: Deprecated APIs, Better alternatives
+- **Testability**: Hard-to-test code patterns
+
+### 📊 Vibe Score
+A calculated 0-100 score based on:
+- Issue count and severity
+- Files scanned vs issues found ratio
+- Security issue weight (higher penalty)
 
 ---
 
 ## 🛠️ Tech Stack
 
-### Frontend
-- **React 18** - UI library
-- **TypeScript** - Type safety
-- **Vite** - Build tool
-- **Zustand** - State management
-- **TailwindCSS** - Styling
-- **Lucide** - Icons
-
-### Backend
-- **Node.js** - Runtime
-- **Express** - Web framework
-- **TypeScript** - Type safety
-- **better-sqlite3** - Database
-- **DeepSeek API** - AI analysis
-- **GitHub API** - Repository access
+| Layer | Technology | Purpose |
+|-------|------------|---------|
+| **Frontend** | React 18 + Vite | Fast, modern UI |
+| | TailwindCSS | Utility-first styling |
+| | Zustand | State management |
+| | Lucide Icons | Consistent iconography |
+| **Backend** | Node.js + Express | API server |
+| | Better-SQLite3 | Local database |
+| | tsx | TypeScript execution |
+| **AI** | DeepSeek API | Code analysis |
+| **Integration** | Octokit | GitHub API client |
 
 ---
 
-## 🔐 Security
+## 🚀 Getting Started
 
-- **Encrypted storage** for GitHub tokens and API keys
-- **JWT-based authentication** with httpOnly cookies
-- **CORS protection** with allowed origins
-- **OAuth 2.0** for GitHub integration
-- **No credentials in code** - all via environment variables
+### Prerequisites
+- **Node.js** v18+
+- **DeepSeek API Key** ([Get free key](https://platform.deepseek.com))
+- **GitHub Token** (optional, for private repos)
+
+### Quick Start
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/danish296/codevibes.git
+cd codevibes
+
+# 2. Install all dependencies
+npm install
+cd codevibes-backend && npm install && cd ..
+
+# 3. Configure backend environment
+cp codevibes-backend/.env.example codevibes-backend/.env
+# Edit .env with your DeepSeek API key
+
+# 4. Start both servers (use two terminals)
+# Terminal 1: Backend
+cd codevibes-backend && npm run dev
+
+# Terminal 2: Frontend
+npm run dev
+```
+
+### Environment Variables
+
+Create `codevibes-backend/.env`:
+
+```ini
+# Required
+PORT=3001
+DEEPSEEK_API_KEY=sk-your-deepseek-key
+
+# Optional
+GITHUB_TOKEN=ghp-your-github-token
+DB_PATH=./data/codevibes.db
+DEEPSEEK_MODEL=deepseek-chat  # or deepseek-reasoner
+ALLOWED_ORIGINS=http://localhost:8080
+```
+
+---
+
+## 📂 Project Structure
+
+```
+codevibes/
+├── src/                          # React Frontend
+│   ├── components/
+│   │   ├── layout/              # Header, Footer, Sidebar
+│   │   └── ui/                  # UI primitives (Button, Card, etc.)
+│   ├── pages/
+│   │   ├── HomePage.tsx         # Landing page
+│   │   ├── AnalyzePage.tsx      # Main analysis interface
+│   │   └── SetupPage.tsx        # API key configuration
+│   ├── lib/
+│   │   └── api.ts               # Backend API client
+│   └── store/
+│       └── analysisStore.ts     # Zustand state
+│
+├── codevibes-backend/            # Express Backend
+│   ├── src/
+│   │   ├── controllers/
+│   │   │   ├── analysisController.ts
+│   │   │   ├── historyController.ts
+│   │   │   └── githubController.ts
+│   │   ├── services/
+│   │   │   ├── deepseekService.ts  # AI prompts & streaming
+│   │   │   └── githubService.ts    # Repo fetching
+│   │   ├── utils/
+│   │   │   ├── database.ts         # SQLite setup
+│   │   │   └── logger.ts           # Winston logging
+│   │   └── server.ts               # Express app
+│   └── data/                       # SQLite database storage
+│
+├── public/screenshots/             # App screenshots
+└── README.md                       # You are here!
+```
+
+---
+
+## 🔌 API Reference
+
+### Analysis Endpoints
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/api/analyze` | POST | Start new analysis |
+| `/api/analyze/stream` | GET | SSE stream for live updates |
+
+### History Endpoints
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/api/history` | GET | List past analyses |
+| `/api/history` | POST | Save analysis result |
+| `/api/history/:id` | DELETE | Delete analysis |
+
+### GitHub Endpoints
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/api/github/repos` | GET | List user's repos |
+| `/api/github/validate` | POST | Check repo access |
+
+---
+
+## 🎨 Vibe Score Calculation
+
+```typescript
+function calculateVibeScore(issues: Issue[]): number {
+  const weights = {
+    CRITICAL: 25,
+    HIGH: 15,
+    MEDIUM: 5,
+    LOW: 1
+  };
+  
+  let penalty = issues.reduce((sum, issue) => 
+    sum + weights[issue.severity], 0);
+  
+  return Math.max(0, 100 - penalty);
+}
+```
+
+| Score Range | Label | Color |
+|-------------|-------|-------|
+| 90-100 | Excellent | 🟢 Green |
+| 70-89 | Good | 🟡 Yellow |
+| 50-69 | Needs Work | 🟠 Orange |
+| 0-49 | Critical | 🔴 Red |
 
 ---
 
@@ -219,7 +360,7 @@ Key settings:
   - Timer now restarts when continuing to next priority level
   - Timer now stops on analysis errors
   - Timer displays correctly when loading from history
-- **Fixed DeepSeek response truncation**: Increased max_tokens from 4000 to 8000 to prevent incomplete JSON responses
+- **Fixed DeepSeek response truncation**: Increased max_tokens from 8000 to prevent incomplete JSON responses
 
 #### 🔧 Improvements
 - **Enhanced error handling**: Better DeepSeek JSON parsing with truncation detection
@@ -238,9 +379,9 @@ Key settings:
 Contributions are welcome! Please feel free to submit a Pull Request.
 
 1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
 ---
@@ -253,10 +394,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🙏 Acknowledgments
 
-- [DeepSeek](https://deepseek.com) for powerful AI models
-- [GitHub](https://github.com) for API and OAuth
-- [Lucide](https://lucide.dev) for beautiful icons
-- All open-source contributors
+- [DeepSeek](https://deepseek.com) for powerful AI reasoning
+- [Shadcn/ui](https://ui.shadcn.com) for beautiful UI components
+- [Lucide](https://lucide.dev) for crisp icons
 
 ---
 
