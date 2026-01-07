@@ -13,22 +13,22 @@ CodeVibes is an intelligent code analysis tool that scans your GitHub repositori
 ### Dashboard & Pre-Analysis
 | Dashboard | Pre-Analysis View |
 |-----------|-------------------|
-| ![Dashboard](/screenshots/Dashboard.png) | ![Pre-Analysis](/screenshots/Pre-Analysis.png) |
+| ![Dashboard](public/screenshots/Dashboard.png) | ![Pre-Analysis](public/screenshots/Pre-Analysis.png) |
 
 ### Analysis in Progress
 | Execution | Repo Selection |
 |-----------|----------------|
-| ![Execution](/screenshots/execution.png) | ![Repo](/screenshots/repo.png) |
+| ![Execution](public/screenshots/execution.png) | ![Repo](public/screenshots/repo.png) |
 
 ### Post-Analysis Results
 | Post-Analysis | Detailed Stats |
 |---------------|----------------|
-| ![Post-Analysis](/screenshots/Post-analysis.png) | ![Stats](/screenshots/Detailed%20analysis%20cost%20and%20stats.png) |
+| ![Post-Analysis](public/screenshots/Post-analysis.png) | ![Stats](public/screenshots/Detailed%20analysis%20cost%20and%20stats.png) |
 
 ### Report & Insights
 | Report Insights |
 |-----------------|
-| ![Report Insights](/screenshots/Report-insight.png) |
+| ![Report Insights](public/screenshots/Report-insight.png) |
 
 ---
 
