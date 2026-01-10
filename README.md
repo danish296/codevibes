@@ -372,6 +372,14 @@ function calculateVibeScore(issues: Issue[]): number {
 - Improved error messages and user feedback
 - Better TypeScript types and interfaces
 
+### [v1.0.1] - 2026-01-10
+📄 **New Changelog Page:** /changelog with full history.
+🛡️ **Trust Indicators**: AES-256, Privacy, Open Source badges in Hero.
+❓ **FAQ Section:** Added to Homepage.
+🧭 **Navigation Updates**:
+    - Header: API → CHANGELOG
+    - Footer: Changelog (Resources), API Reference (Product), Jan 10 update badge.
+
 ---
 
 ## 🤝 Contributing
