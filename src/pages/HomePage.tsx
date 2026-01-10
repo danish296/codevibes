@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Github, ArrowRight, Shield, Zap, Coins, FileText, Play, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Github, ArrowRight, Shield, Zap, Coins, FileText, Play, ChevronLeft, ChevronRight, Lock, EyeOff, Code } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Header } from '@/components/layout/Header';
@@ -24,6 +24,12 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel"
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 const features = [
   {
@@ -215,9 +221,22 @@ export default function HomePage() {
                   </Button>
                 </div>
 
-                <p className="text-sm text-muted-foreground mt-4">
-                  Public repos • No signup • Your API key
-                </p>
+              </div>
+
+              {/* Trust Indicators */}
+              <div className="flex flex-wrap justify-center gap-6 mb-12 text-sm text-muted-foreground animate-fade-in" style={{ animationDelay: '100ms' }}>
+                <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/5 border border-primary/10">
+                  <Lock className="w-3.5 h-3.5 text-primary" />
+                  <span>AES-256 Token Encryption</span>
+                </div>
+                <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/5 border border-primary/10">
+                  <EyeOff className="w-3.5 h-3.5 text-primary" />
+                  <span>No Code Storage Policy</span>
+                </div>
+                <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/5 border border-primary/10">
+                  <Code className="w-3.5 h-3.5 text-primary" />
+                  <span>100% Open Source</span>
+                </div>
               </div>
             </div>
 
@@ -514,6 +533,54 @@ export default function HomePage() {
 
 
 
+
+        {/* FAQ Section */}
+        <section className="py-20 border-t border-border">
+          <div className="container mx-auto px-4 max-w-3xl">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold tracking-tight mb-3">Frequently Asked Questions</h2>
+              <p className="text-muted-foreground">Everything you need to know about CodeVibes.</p>
+            </div>
+
+            <Accordion type="single" collapsible className="w-full">
+              <AccordionItem value="item-1">
+                <AccordionTrigger className="text-left">What languages does CodeVibes support?</AccordionTrigger>
+                <AccordionContent>
+                  We primarily support TypeScript, JavaScript, Python, Go, and Java. The analysis engine (DeepSeek V3) is capable of understanding most modern languages, but our priority-scanning heuristics are optimized for these stacks.
+                </AccordionContent>
+              </AccordionItem>
+
+              <AccordionItem value="item-2">
+                <AccordionTrigger className="text-left">Do you store my code?</AccordionTrigger>
+                <AccordionContent>
+                  <strong>No.</strong> We are privacy-first. Your code is streamed to our secure analysis engine and immediately discarded after processing. We only store the <em>analysis results</em> (the report) so you can view it later. We never train models on your code.
+                </AccordionContent>
+              </AccordionItem>
+
+              <AccordionItem value="item-3">
+                <AccordionTrigger className="text-left">How is this different from GitHub Copilot or Sonar?</AccordionTrigger>
+                <AccordionContent>
+                  Most tools optimize for <em>generation</em> (writing code) or valid syntax. CodeVibes optimizes for <strong>Threat Modeling</strong> and Logic Bugs. We use a unique 3-tier priority system (Security → Reliability → Quality) to mimic how a human auditor reviews code, saving you tokens and time.
+                </AccordionContent>
+              </AccordionItem>
+
+              <AccordionItem value="item-4">
+                <AccordionTrigger className="text-left">Is it free to use?</AccordionTrigger>
+                <AccordionContent>
+                  CodeVibes is Open Source! You can self-host it for free. For the hosted version, we offer a generous Free Tier (3 scans/month) so you can try it out. Paid plans are available for power users who need higher limits and team features.
+                </AccordionContent>
+              </AccordionItem>
+
+              <AccordionItem value="item-5">
+                <AccordionTrigger className="text-left">Why is the analysis so fast?</AccordionTrigger>
+                <AccordionContent>
+                  We use aggressive parallelization and "Smart Context" caching. Instead of reading your entire repo linearly, we fetch critical files in parallel and cache the dependency graph. This makes re-scanning up to 35x faster than traditional sequential analysis.
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          </div>
+        </section>
+
         {/* CTA Section */}
         <section className="py-20 border-t border-border">
           <div className="container mx-auto px-4">
@@ -532,7 +599,7 @@ export default function HomePage() {
                   <ArrowRight className="ml-2 w-4 h-4" />
                 </Button>
                 <Button variant="outline" size="lg" asChild>
-                  <a href="https://github.com/codevibes" target="_blank" rel="noopener noreferrer">
+                  <a href="https://github.com/danish296/codevibes" target="_blank" rel="noopener noreferrer">
                     <Github className="mr-2 w-4 h-4" />
                     View on GitHub
                   </a>

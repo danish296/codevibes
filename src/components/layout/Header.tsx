@@ -8,6 +8,7 @@ import { SettingsModal } from '@/components/SettingsModal';
 const navItems = [
   { path: '/analyze', label: 'ANALYZE' },
   { path: '/documentation', label: 'DOCS' },
+  { path: '/changelog', label: 'CHANGELOG' },
   { path: '/api-reference', label: 'API' },
 ];
 
@@ -42,7 +43,7 @@ export function Header() {
                 <img src="/logo.png" alt="CodeVibes Logo" className="w-9 h-9 rounded-lg" />
                 <div className="flex flex-col">
                   <span className="font-bold text-base tracking-tight leading-none">CodeVibes</span>
-                  <span className="text-[10px] text-muted-foreground uppercase tracking-widest">v1.0.0-beta</span>
+                  <span className="text-[10px] text-muted-foreground uppercase tracking-widest">v1.0.1-beta</span>
                 </div>
               </Link>
 

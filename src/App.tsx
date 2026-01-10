@@ -10,6 +10,7 @@ import AnalyzePage from "./pages/AnalyzePage";
 import ResultsPage from "./pages/ResultsPage";
 import DocumentationPage from "./pages/DocumentationPage";
 import ApiReferencePage from "./pages/ApiReferencePage";
+import ChangelogPage from "./pages/ChangelogPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -27,6 +28,9 @@ const App = () => (
             <Route path="/analyze" element={<AnalyzePage />} />
             <Route path="/results" element={<ResultsPage />} />
             <Route path="/documentation" element={<DocumentationPage />} />
+            <Route path="/results" element={<ResultsPage />} />
+            <Route path="/documentation" element={<DocumentationPage />} />
+            <Route path="/changelog" element={<ChangelogPage />} />
             <Route path="/api-reference" element={<ApiReferencePage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
