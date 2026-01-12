@@ -24,20 +24,34 @@ CRITICAL: Output ONLY valid JSON. No markdown, no explanations outside the JSON 
 TASK: Identify exploitable security vulnerabilities in the provided code files.
 VULNERABILITIES TO DETECT:
 
-1. **Hardcoded Secrets & Credentials**
+1. **Hardcoded Secrets & Credentials** (HIGH PRIORITY)
    REPORT if you find:
-   - AWS keys: AKIA[A-Z0-9]{16}
-   - GitHub tokens: ghp_[a-zA-Z0-9]{36}, github_pat_[a-zA-Z0-9]{22}_[a-zA-Z0-9]{59}
-   - Stripe keys: sk_live_[a-zA-Z0-9]{24,}, pk_live_[a-zA-Z0-9]{24,}
-   - Private keys: -----BEGIN (RSA|EC|OPENSSH) PRIVATE KEY-----
-   - JWT tokens: eyJ[a-zA-Z0-9-_]+\\.eyJ[a-zA-Z0-9-_]+\\.[a-zA-Z0-9-_]+
-   - Connection strings: postgresql://.*:.*@(?!localhost|127\\.0\\.0\\.1|example\\.com)
-   - API keys in code: const apiKey = "sk_..." or API_KEY = "live_..."
-   
-   IGNORE:
-   - Files: .env.example, .env.template, .env.sample, config.example.*
-   - Placeholders: "your_*", "enter_*", "<YOUR_*>", "xxx", "12345", "test", "demo"
+   - **AWS**: 
+     - Access Key: AKIA[0-9A-Z]{16}
+     - Temp Key: ASIA[0-9A-Z]{16}
+     - Secret Key: [0-9a-zA-Z/+]{40}
+   - **Stripe**: 
+     - Standard: (sk|pk)_live_[0-9a-zA-Z]{24,}
+     - Restricted: rk_live_[0-9a-zA-Z]{24,}
+   - **Google Cloud**: AIza[0-9A-Za-z\\-_]{35}
+   - **OpenAI**: sk-[a-zA-Z0-9]{48}
+   - **Anthropic**: sk-ant-[a-zA-Z0-9]{80}
+   - **Slack**: xox[baprs]-[a-zA-Z0-9-]{10,}
+   - **GitHub**: 
+     - OAuth: ghp_[a-zA-Z0-9]{36}
+     - PAT: github_pat_[a-zA-Z0-9]{22}_[a-zA-Z0-9]{59}
+   - **Private Keys**: -----BEGIN (RSA|EC|DSA|OPENSSH|PGP) PRIVATE KEY-----
+   - **JWT tokens**: eyJ[a-zA-Z0-9-_]+\\.eyJ[a-zA-Z0-9-_]+\\.[a-zA-Z0-9-_]+
+   - **Database**: postgresql://.*:.*@(?!localhost|127\\.0\\.0\\.1|example\\.com)
+   - **Generic High-Entropy assignments**:
+     - Variables named *SECRET*, *KEY*, *TOKEN*, *PASSWORD*, *AUTH*, *CREDENTIAL* assigned to strings > 20 chars that look random (mixed case, numbers).
+     - Example: const API_SECRET = "x8d9f8d9s8d9f8s9d8f9s8d9f8";
+
+   IGNORE (False Positives):
+   - Files: .env.example, .env.template, .env.sample, config.example.*, *.test.ts, *.spec.ts
+   - Placeholders: "your_*", "enter_*", "<YOUR_*>", "xxx", "12345", "test", "demo", "example"
    - Local references: localhost, 127.0.0.1, example.com, test.com
+   - Test data: commonly used simple values in test files
 
 2. **Authentication & Authorization**
    - Missing JWT signature verification (jwt.decode() without verify)
@@ -125,7 +139,7 @@ CRITICAL (Immediate exploitation, severe impact):
 - Authentication bypass (access any account)
 - Remote Code Execution (RCE)
 - SQL injection with write access
-- Hardcoded admin credentials
+- Hardcoded admin credentials or LIVE API keys (AWS, Stripe, OpenAI, etc.)
 - Exposed admin API without auth
 
 HIGH (Likely exploitable, significant impact):
@@ -135,6 +149,7 @@ HIGH (Likely exploitable, significant impact):
 - JWT without signature verification
 - Command injection
 - Insecure deserialization
+- Hardcoded TEST keys or high-entropy secrets of unknown origin
 
 MEDIUM (Requires conditions, moderate impact):
 - CORS allowing untrusted specific domains
@@ -158,14 +173,14 @@ Return ONLY this JSON structure (no markdown code blocks):
   "issues": [
     {
       "severity": "CRITICAL",
-      "category": "SQL Injection",
-      "file": "src/controllers/userController.ts",
-      "line": 42,
-      "title": "SQL injection via string concatenation in user search",
-      "description": "The searchUsers function concatenates user input directly into SQL query without parameterization. Line 42: db.query('SELECT * FROM users WHERE name = ' + req.query.name)",
-      "impact": "Attacker can execute arbitrary SQL: /api/users?name=admin' OR '1'='1 returns all users. Can extract password hashes, modify data, or drop tables with crafted input.",
-      "fix": "Use parameterized queries with placeholders. Replace string concatenation with prepared statements that separate SQL structure from data values.",
-      "codeExample": "// Secure version using parameterized query\\nconst users = await db.query(\\n  'SELECT * FROM users WHERE name = $1',\\n  [req.query.name]\\n);"
+      "category": "Hardcoded Secrets",
+      "file": "src/config/aws.ts",
+      "line": 15,
+      "title": "Hardcoded AWS Access Key",
+      "description": "Found potential AWS Access Key ID: AKIAIOSFODNN7EXAMPLE. Hardcoding credentials poses a severe security risk.",
+      "impact": "Attackers can access AWS resources, potentially incurring costs or stealing data.",
+      "fix": "Use environment variables (process.env.AWS_ACCESS_KEY_ID). Ensure .env is gitignored.",
+      "codeExample": "// Secure version\\nconst accessKey = process.env.AWS_ACCESS_KEY_ID;"
     }
   ],
   "summary": "Found 3 CRITICAL, 5 HIGH, 2 MEDIUM, 1 LOW issues across 8 files",
@@ -176,7 +191,7 @@ IMPORTANT RULES:
 
 1. BE SPECIFIC: Include exact file paths, line numbers, variable/function names
 2. PROVE THE ISSUE: Reference actual code from the files, not hypothetical examples
-3. SEVERITY ACCURACY: Use the definitions above, don't inflate/downgrade
+3. SEVERITY ACCURACY: Hardcoded LIVE keys are CRITICAL. Test keys are HIGH.
 4. REAL SECRETS ONLY: Don't report "your_api_key", "example.com", or placeholder text
 5. VALID JSON: Escape quotes, newlines, backslashes properly
 6. NO FALSE POSITIVES: If you're not 100% certain, don't report it
@@ -185,7 +200,7 @@ IMPORTANT RULES:
 
 OUTPUT CONSTRAINTS:
 - "severity" must be exactly: "CRITICAL", "HIGH", "MEDIUM", or "LOW"
-- "category" must match vulnerability types above (e.g., "SQL Injection", "XSS", "Authentication")
+- "category" must match vulnerability types above (e.g., "Hardcoded Secrets", "SQL Injection", "XSS", "Authentication")
 - "line" must be a positive integer
 - "title" max 100 characters
 - "description" must reference specific code (function names, variable names, line numbers)
@@ -410,6 +425,13 @@ Event Listeners:
 ❌ Adding listeners in loop without removing
 ❌ Not cleaning up DOM event listeners
 ❌ Event emitters with growing listener count
+❌ SSE/Stream endpoints not handling client disconnect: req.on('close') missing
+❌ Res.write() calls continuing after connection closed
+
+Async Handler Bugs:
+❌ Express/Route handlers without try-catch (unless using express-async-errors)
+❌ Not calling properties like next(err) in async catch blocks
+❌ "UnhandledPromiseRejection" prone patterns in middleware
 
 ─────────────────────────────────────────────────────────────────────────
 

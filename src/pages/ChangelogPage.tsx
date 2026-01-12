@@ -6,6 +6,34 @@ import { Calendar, Plus, Wrench, Check, Rocket, ArrowLeft, GitBranch } from 'luc
 // Changelog data - add new entries at the top
 const changelogData = [
     {
+        version: 'v1.0.2-beta',
+        date: 'January 12, 2026',
+        title: 'Security & Reliability Hardening',
+        description: 'Critical security coverage expansion and stability improvements for async operations.',
+        changes: [
+            {
+                type: 'improved',
+                title: 'Enhanced Secret Detection',
+                description: 'Expanded detection for AWS (AKIA/ASIA), Stripe (Restricted/Live), Slack, Google Cloud, and high-entropy generic secrets.',
+            },
+            {
+                type: 'added',
+                title: 'Live Key Classification',
+                description: 'introduced CRITICAL severity classification for detected live API keys to prioritize immediate remediation.',
+            },
+            {
+                type: 'fixed',
+                title: 'Async Stability',
+                description: 'Added automated detection for unhandled async errors in Express routes and missing SSE cleanup handlers.',
+            },
+            {
+                type: 'improved',
+                title: 'Documentation & API',
+                description: 'Minor documentation and API route updates to align with v1.0.2 release.',
+            },
+        ],
+    },
+    {
         version: 'v1.0.1-beta',
         date: 'January 10, 2026',
         title: 'Community & Transparency Updates',

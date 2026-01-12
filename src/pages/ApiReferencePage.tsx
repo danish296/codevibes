@@ -92,8 +92,8 @@ export default function ApiReferencePage() {
                         <p className="text-sm text-muted-foreground mt-4">Response:</p>
                         <CodeBlock language="json" code={`{
   "status": "ok",
-  "timestamp": "2026-01-06T00:00:00.000Z",
-  "version": "1.0.0"
+  "timestamp": "2026-01-12T00:00:00.000Z",
+  "version": "1.0.2"
 }`} />
                     </section>
 

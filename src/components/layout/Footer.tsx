@@ -20,7 +20,7 @@ export function Footer() {
                 Built with DeepSeek v3
               </span>
               <span className="inline-flex items-center gap-1.5 px-2 py-1 rounded-md bg-muted">
-                v1.0.1-beta
+                v1.0.2-beta
               </span>
             </div>
           </div>
@@ -76,7 +76,7 @@ export function Footer() {
                 <Link to="/changelog" className="text-sm text-muted-foreground hover:text-foreground transition-base flex items-center gap-2">
                   Changelog
                   <span className="text-[10px] px-1.5 py-0.5 rounded bg-primary/10 text-primary font-medium">
-                    Jan 10
+                    Jan 12
                   </span>
                 </Link>
               </li>
